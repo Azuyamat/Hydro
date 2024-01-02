@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.0-Beta2'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'com.azuyamat'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+    implementation "org.reflections:reflections:0.9.12"
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+kotlin {
+    jvmToolchain(17)
+}
+
+tasks.register('copyJar', Copy) {
+    from shadowJar
+    into 'D:\\servers\\hydro\\plugins'
+}
+
+tasks.register('startServer', Exec) {
+    commandLine 'C:\\Users\\blane\\.cargo\\bin\\boxes.exe', 'start', 'hydro'
+}
+
+tasks.jar.finalizedBy(tasks.copyJar)
+tasks.shadowJar.finalizedBy(tasks.copyJar)
+tasks.copyJar.finalizedBy(tasks.startServer)
+
+build {
+    dependsOn shadowJar
+}
