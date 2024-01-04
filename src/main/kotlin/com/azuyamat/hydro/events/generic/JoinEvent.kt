@@ -1,5 +1,6 @@
 package com.azuyamat.hydro.events.generic
 
+import com.azuyamat.hydro.data.player.getPlayerData
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
@@ -15,5 +16,8 @@ class JoinEvent : Listener {
             Component.text("[+]", NamedTextColor.AQUA)
                 .append(Component.text(" ${player.name} joined the game", NamedTextColor.GRAY))
         event.joinMessage(joinMessage)
+
+        val playerData = player.getPlayerData()
+        println(playerData)
     }
 }

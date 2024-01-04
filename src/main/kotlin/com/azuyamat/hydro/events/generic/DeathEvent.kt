@@ -1,8 +1,7 @@
 package com.azuyamat.hydro.events.generic
 
-import com.azuyamat.hydro.data.player.PlayerDataManipulator
+import com.azuyamat.hydro.data.manipulators.PlayerDataManipulator
 import com.azuyamat.hydro.data.player.getPlayerData
-import com.azuyamat.hydro.instance
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -21,10 +20,10 @@ class DeathEvent : Listener {
             val killerData = killer.getPlayerData()
 
             killerData.stats.kills++
-            PlayerDataManipulator.save(killerData)
+            PlayerDataManipulator.cache(killerData)
         }
 
         playerData.stats.deaths++
-        PlayerDataManipulator.save(playerData)
+        PlayerDataManipulator.cache(playerData)
     }
 }

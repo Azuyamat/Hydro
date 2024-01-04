@@ -1,8 +1,8 @@
 package com.azuyamat.hydro.events.generic
 
-import com.azuyamat.hydro.data.player.PlayerDataManipulator
+import com.azuyamat.hydro.Logger.info
+import com.azuyamat.hydro.data.manipulators.PlayerDataManipulator
 import com.azuyamat.hydro.data.player.getPlayerData
-import com.azuyamat.hydro.instance
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
@@ -16,8 +16,8 @@ class QuitEvent : Listener {
         val playerData = player.getPlayerData()
 
         // Save player data
-        PlayerDataManipulator.save(playerData, true)
+        PlayerDataManipulator.save(playerData)
 
-        instance.server.logger.info("Saved player data for ${player.name}")
+        info("Saved player data for ${player.name}")
     }
 }

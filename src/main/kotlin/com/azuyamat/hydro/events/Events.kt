@@ -1,5 +1,6 @@
 package com.azuyamat.hydro.events
 
+import com.azuyamat.hydro.Logger.info
 import com.azuyamat.hydro.eventsPackageName
 import com.azuyamat.hydro.instance
 import org.bukkit.event.Listener
@@ -20,6 +21,6 @@ object Events {
             event.constructors.first().newInstance() as Listener, instance
         )
 
-        instance.server.logger.info("Registered event: ${event.simpleName}")
+        info("Registered event: ${event.simpleName}")
     }
 }
