@@ -8,7 +8,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.plugin.java.JavaPlugin
 
-class PickaxeManager(private val plugin: JavaPlugin) {
+class   PickaxeManager(private val plugin: JavaPlugin) {
 
     val pickaxes = mutableMapOf<String, Pickaxe>()
 
