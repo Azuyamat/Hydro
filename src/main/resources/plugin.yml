@@ -2,5 +2,6 @@ name: hydro
 version: '${version}'
 main: com.azuyamat.hydro.Hydro
 api-version: '1.20'
-authors: [Azuyamat, Mpschorr]
+authors: [Azuyamat]
 description: Core plugin for HydroPrison
+prefix: HYDRO

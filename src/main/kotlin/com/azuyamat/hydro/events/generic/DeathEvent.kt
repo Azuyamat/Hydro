@@ -12,9 +12,8 @@ class DeathEvent : Listener {
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.player
-        val playerData = player.getPlayerData()
 
-        // Check if cause is a player
+        // Check if cause is a player: if so, increase kills
         val killer = player.killer?.player
         if (killer is Player) {
             val killerData = killer.getPlayerData()
@@ -23,6 +22,8 @@ class DeathEvent : Listener {
             PlayerDataManipulator.cache(killerData)
         }
 
+        // Increase deaths of victim
+        val playerData = player.getPlayerData()
         playerData.stats.deaths++
         PlayerDataManipulator.cache(playerData)
     }
