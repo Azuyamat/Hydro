@@ -62,7 +62,7 @@ tasks.register('copyJar', Copy) {
 }
 
 tasks.register('startServer', Exec) {
-    commandLine env.BOXES_PATH.value, 'start', 'hydro'
+    commandLine env.BOXES_PATH.value, 'start', env.SERVER_NAME.value
 }
 
 tasks.jar.finalizedBy(tasks.copyJar)

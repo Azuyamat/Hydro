@@ -1,6 +1,6 @@
 package com.azuyamat.hydro
 
-const val PREFIX = "[HYDRO] "
+const val PREFIX = "[BLIXIFY] "
 
 
 object Logger {
