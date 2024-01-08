@@ -12,7 +12,7 @@ import org.bukkit.entity.Player
     aliases = ["t"],
     permission = "blixify.test",
 )
-class Test {
+class TestCommand {
 
     fun onCommand(player: Player): Boolean {
         player.sendMessage("Test command")
