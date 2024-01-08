@@ -62,6 +62,8 @@ tasks.register('copyJar', Copy) {
 }
 
 tasks.register('startServer', Exec) {
+    onlyIf { env.START_SERVER.value == "true" }
+    println("Starting server")
     commandLine env.BOXES_PATH.value, 'start', env.SERVER_NAME.value
 }
 
