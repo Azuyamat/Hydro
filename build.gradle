@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.0.0-Beta2'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "co.uzzu.dotenv.gradle" version "4.0.0"
 }
 
 group = 'com.azuyamat'
@@ -54,12 +55,14 @@ kotlin {
 }
 
 tasks.register('copyJar', Copy) {
+    println("Copying jar to plugins folder")
+    println("Plugins folder: ${env.PLUGINS_PATH.value}")
     from shadowJar
-    into 'D:\\servers\\hydro\\plugins'
+    into env.PLUGINS_PATH.value
 }
 
 tasks.register('startServer', Exec) {
-    commandLine 'C:\\Users\\blane\\.cargo\\bin\\boxes.exe', 'start', 'hydro'
+    commandLine env.BOXES_PATH.value, 'start', 'hydro'
 }
 
 tasks.jar.finalizedBy(tasks.copyJar)
