@@ -6,6 +6,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import com.azuyamat.blixify.Formatter.format
+import net.kyori.adventure.text.TextComponent
+import org.bukkit.entity.Player
 
 class ChatEvent : Listener {
 
@@ -17,17 +20,19 @@ class ChatEvent : Listener {
         val playerData = player.getPlayerData()
 
         val chatcolor = playerData.chatcolor
-        val message = event.originalMessage()
+        val message = (event.originalMessage() as TextComponent).content()
 
         // Set the format
-        val format = Component.text("${player.name}: ").color(NamedTextColor.GRAY)
-                .append(
-                        message.color(chatcolor.color)
-                )
+        val format = format("${player.name}: <gray>$message")
+        val staffFormat = format("<click:run_command:/kick ${player.name}>${player.name}</click>: <gray>$message")
 
         // Broadcast the message to all viewers separately to allow mods to see uncensored messages
-        event.viewers().forEach { viewer ->
-            viewer.sendMessage(format)
+        val viewers = event.viewers()
+        for (viewer in viewers) {
+
+            val playerViewer = viewer as? Player ?: continue
+            val usedFormat = if (playerViewer.hasPermission("blixify.staff")) staffFormat else format
+            playerViewer.sendMessage(usedFormat)
         }
     }
 }

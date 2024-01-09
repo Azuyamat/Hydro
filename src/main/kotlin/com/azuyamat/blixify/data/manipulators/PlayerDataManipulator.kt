@@ -16,7 +16,10 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
                 // Get local file
                 val fileName = "${data.uuid}.json"
                 val dataFolder = instance.dataFolder
-                val file = File(dataFolder, fileName)
+                val playerFolder = File(dataFolder, "players")
+                // Create players folder if it doesn't exist
+                playerFolder.mkdirs()
+                val file = File(playerFolder, fileName)
 
                 // Ensure file exists
                 file.parentFile.mkdirs()
