@@ -8,6 +8,7 @@ import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.enums.Enchant
 import org.bukkit.entity.Player
 import kotlin.math.max
+import kotlin.math.min
 
 @Command(
     name = "enchant",
@@ -33,7 +34,7 @@ class EnchantCommand {
         }
 
         val currentLevel = target.getPlayerData().enchants[enchantment] ?: 0
-        val newLevel = max(currentLevel + level, enchantment.maxLevel)
+        val newLevel = min(currentLevel + level, enchantment.maxLevel)
 
         val data = target.getPlayerData()
         data.enchants[enchantment] = newLevel
