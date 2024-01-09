@@ -1,6 +1,8 @@
 package com.azuyamat.blixify.commands
 
 import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.Logger.info
+import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.commands.completions.Completions.getCompletion
@@ -15,6 +17,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.functions
+import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
 import com.azuyamat.blixify.commands.annotations.Command as CommandAnnotation
 
@@ -144,9 +147,15 @@ class CommandBuilder(private val command: KClass<*>) {
         val parameters = method.valueParameters.slice(1 until method.valueParameters.size)
         val parsedArgs = arrayOfNulls<Any>(parameters.size)
 
-        args.withIndex().forEach { (index, arg) ->
+        for ((index, arg) in args.withIndex()) {
+
             val parameter = parameters[index]
             val type = parameter.type
+
+            if (parameter.hasAnnotation<Catcher>()) {
+                parsedArgs[index] = args.slice(index until args.size).joinToString(" ")
+                break
+            }
 
             when (type.classifier) {
                 Int::class -> parsedArgs[index] = arg.toIntOrNull()
