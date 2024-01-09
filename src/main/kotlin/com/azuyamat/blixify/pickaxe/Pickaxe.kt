@@ -3,6 +3,7 @@ package com.azuyamat.blixify.pickaxe
 import com.azuyamat.blixify.pickaxeManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -28,7 +29,9 @@ fun createPickaxe(type: String): ItemStack {
     val pickaxe = ItemStack(info.material)
     val meta = pickaxe.itemMeta
 
-    meta.displayName(info.name)
+    // Take note: Removing italics
+    val name = info.name.decoration(TextDecoration.ITALIC, false)
+    meta.displayName(name)
     meta.isUnbreakable = info.unbreakable
     info.flags.forEach { meta.addItemFlags(it) }
     meta.lore(info.lore)

@@ -43,6 +43,7 @@ object Enchants {
 
 class EnchantListener(private val enchants: MutableList<Enchant<*>>) : Listener {
 
+    // Active enchants
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
 
@@ -52,6 +53,7 @@ class EnchantListener(private val enchants: MutableList<Enchant<*>>) : Listener 
         triggeredEnchants.forEach { it.onEvent(event) }
     }
 
+    // Passive enchants
     @EventHandler
     fun onItemSwitch(event: PlayerItemHeldEvent) {
 

@@ -7,6 +7,7 @@ import com.azuyamat.blixify.data.manipulators.PlayerDataManipulator.cache
 import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.enums.Enchant
 import org.bukkit.entity.Player
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -23,45 +24,15 @@ class EnchantCommand {
     }
 
     @SubCommand("add")
-    fun add(player: Player, @Tab("enchant") enchant: String, level: Int, target: Player?) {
+    fun add(player: Player, @Tab("enchant") enchant: String, @Tab("int") level: Int, target: Player?) {
 
-        val target = target ?: player
-
-        // Check if enchant is valid
-        val enchantment = Enchant.entries.find { it.name.equals(enchant, true) } ?: run {
-            player.sendMessage("Invalid enchantment!")
-            return
-        }
-
-        val currentLevel = target.getPlayerData().enchants[enchantment] ?: 0
-        val newLevel = min(currentLevel + level, enchantment.maxLevel)
-
-        val data = target.getPlayerData()
-        data.enchants[enchantment] = newLevel
-        cache(data)
-
-        player.sendMessage("Added $enchantment $level to ${target.name}")
+        modifyEnchant(target ?: player, enchant, abs(level))
     }
 
     @SubCommand("remove")
     fun remove(player: Player, @Tab("enchant") enchant: String, level: Int, target: Player?) {
 
-        val target = target ?: player
-
-        // Check if enchant is valid
-        val enchantment = Enchant.entries.find { it.name.equals(enchant, true) } ?: run {
-            player.sendMessage("Invalid enchantment!")
-            return
-        }
-
-        val currentLevel = target.getPlayerData().enchants[enchantment] ?: 0
-        val newLevel = max(currentLevel - level, 0)
-
-        val data = target.getPlayerData()
-        data.enchants[enchantment] = newLevel
-        cache(data)
-
-        player.sendMessage("Removed $enchantment $level from ${target.name}")
+        modifyEnchant(target ?: player, enchant, -abs(level))
     }
 
     @SubCommand("list")
@@ -73,5 +44,24 @@ class EnchantCommand {
         val message = enchants.map { "${it.key.name}: ${it.value}" }.joinToString("\n")
 
         player.sendMessage(message)
+    }
+
+    private fun modifyEnchant(target: Player, enchant: String, level: Int) {
+
+        // Check if enchant is valid
+        val enchantment = Enchant.entries.find { it.name.equals(enchant, true) } ?: run {
+            target.sendMessage("Invalid enchantment!")
+            return
+        }
+
+        val currentLevel = target.getPlayerData().enchants[enchantment] ?: 0
+        val newLevel = max(currentLevel - level, 0)
+
+        val data = target.getPlayerData()
+        data.enchants[enchantment] = newLevel
+        cache(data)
+
+        val action = if (level > 0) "Added" else "Removed"
+        target.sendMessage("$action $enchantment $level -> ${target.name}")
     }
 }

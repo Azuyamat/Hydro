@@ -244,17 +244,22 @@ class CommandBuilder(private val command: KClass<*>) {
         val parameter = parameters[index]
 
         val type = parameter.type
-        val tabType = parameter.findAnnotation<Tab>()?.list ?: "default"
+        val tab = parameter.findAnnotation<Tab>()
+        val tabTypeList = tab?.list ?: "default"
 
-        return if (tabType == "default") {
+        return if (tabTypeList == "default") {
             when (type.classifier) {
                 Boolean::class -> listOf("true", "false")
                 Player::class -> instance.server.onlinePlayers.map { it.name }
                 OfflinePlayer::class -> instance.server.offlinePlayers.mapNotNull { it.name }
+                Int::class -> (0..100).map { it.toString() }
                 else -> emptyList()
             }
         } else {
-            getCompletion(tabType)?.complete()
-        } ?: emptyList()
+            val completion = getCompletion(tabTypeList) ?: return emptyList()
+
+            if (tab?.args?.isEmpty() == true) completion.complete()
+            else completion.completeWithArgs(*tab?.args ?: emptyArray())
+        }
     }
 }
