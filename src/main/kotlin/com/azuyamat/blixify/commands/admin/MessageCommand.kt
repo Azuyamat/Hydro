@@ -10,34 +10,34 @@ import org.bukkit.*
 val latestMessages: MutableMap<UUID, UUID> = mutableMapOf()
 
 @Command(
-    name = "Message",
+    name = "message",
     description = "Chat to other players!",
     aliases = ["msg"],
-    permission = "blixify.dm"
+    permission = "blixify.msg"
 )
-
-
 class MessageCommand {
 
     fun onCommand(player: Player, reciever: Player, @Catcher message: String) {
+
         reciever.sendMessage(format("<gray>${player.name} §<dark_gray>| §<white>$message"))
-        latestMessages.put(player.uniqueId, reciever.uniqueId)
+        latestMessages[player.uniqueId] = reciever.uniqueId
     }
 }
 
 @Command(
-    name = "Reply",
+    name = "reply",
     description = "Reply to messages!",
     aliases = ["r"],
     permission = "blixify.reply"
 )
-
 class ReplyCommand {
+
     fun onCommand(player: Player, @Catcher message: String) {
-        var user = latestMessages.get(player.uniqueId)
-        var messager = user?.let { Bukkit.getPlayer(it) }
-        if (messager != null) {
-            messager.sendMessage(format("<gray>${player.name} §<dark_gray>| §<white>$message"))
+
+        val receiver = latestMessages[player.uniqueId]?.let { Bukkit.getPlayer(it) } ?: run {
+            player.sendMessage(format("<red>There is no one to reply to!"))
+            return
         }
+        receiver.sendMessage(format("<gray>${player.name} <dark_gray>| <white>$message"))
     }
 }
