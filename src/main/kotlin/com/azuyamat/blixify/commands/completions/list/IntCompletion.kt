@@ -4,6 +4,10 @@ import com.azuyamat.blixify.commands.completions.Completion
 
 class IntCompletion : Completion {
 
+    override fun complete(): List<String> {
+        return (0..100).map { it.toString() }
+    }
+
     override fun completeWithArgs(vararg args: String): List<String> {
 
         val minimum = args[0].toIntOrNull() ?: 0

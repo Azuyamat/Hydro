@@ -4,6 +4,7 @@ import com.azuyamat.blixify.Formatter.format
 import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.commands.annotations.SubCommand
+import com.azuyamat.blixify.sanitize
 import org.bukkit.entity.Player
 import java.util.*
 import org.bukkit.*
@@ -18,10 +19,10 @@ val latestMessages: MutableMap<UUID, UUID> = mutableMapOf()
 )
 class MessageCommand {
 
-    fun onCommand(player: Player, reciever: Player, @Catcher message: String) {
+    fun onCommand(player: Player, receiver: Player, @Catcher message: String) {
 
-        reciever.sendMessage(format("<gray>${player.name} §<dark_gray>-> §<white>$message"))
-        latestMessages[player.uniqueId] = reciever.uniqueId
+        interact(player, receiver, message)
+        latestMessages[player.uniqueId] = receiver.uniqueId
     }
 }
 
@@ -39,11 +40,17 @@ class ReplyCommand {
             player.sendMessage(format("<red>There is no one to reply to!"))
             return
         }
-        receiver.sendMessage(format("<gray>${player.name} <dark_gray>-> <white>$message"))
+        interact(player, receiver, message)
     }
+}
 
-    @SubCommand("Test")
-    fun testSubcommand(player: Player){
-        player.sendMessage("Test Subcommand")
-    }
+fun interact(player: Player, receiver: Player, message: String) {
+
+    val sanitized = message.sanitize()
+    receiver.sendMessage(format(
+        "<dark_gray>[<blue><bold>✉<reset><dark_gray>] <gray>from <blue>${player.name}<gray>: $sanitized"
+    ))
+    player.sendMessage(format(
+        "<dark_gray>[<blue><bold>✉<reset><dark_gray>] <gray>to <blue>${player.name}<gray>: $sanitized"
+    ))
 }

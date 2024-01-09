@@ -24,7 +24,7 @@ class EnchantCommand {
     }
 
     @SubCommand("add")
-    fun add(player: Player, @Tab("enchant") enchant: String, @Tab("int") level: Int, target: Player?) {
+    fun add(player: Player, @Tab("enchant") enchant: String, level: Int, target: Player?) {
 
         modifyEnchant(target ?: player, enchant, abs(level))
     }
