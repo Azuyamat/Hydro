@@ -71,6 +71,15 @@ class CommandBuilder(private val command: KClass<*>) {
         )
     }
 
+    val usageMessage = { sender: CommandSender, usage: String ->
+        sender.sendMessage(
+            format(
+                "<red>Usage: $usage" +
+                        "\n<gray><> = required, [] = optional"
+            )
+        )
+    }
+
     fun getExecutor(): CommandExecutor {
         return CommandExecutor { sender, _, _, args ->
 
@@ -82,30 +91,27 @@ class CommandBuilder(private val command: KClass<*>) {
 
             val commandInstance = command.constructors.first().call()
 
+            val function: KFunction<*>
+            val commandSender: CommandSender
+            val parsedArgs: Array<*>
+            var usage = "/${commandInfo.name}"
+
+            val requiredParams: List<KParameter>
+            val optionalParams: List<KParameter>
+
+            var playerOnly = commandInfo.isPlayerOnly
+
             // Main command function
             if (args.isEmpty() || subCommands.isEmpty()) {
 
-                if (commandInfo.isPlayerOnly && sender !is Player) {
-                    playerOnlyMessage(sender)
-                    return@CommandExecutor true
-                }
-
-                val commandSender = if (commandInfo.isPlayerOnly) sender as Player else sender
-                val parsedArgs = parseCommandArgs(mainFunction, args)
+                commandSender = if (commandInfo.isPlayerOnly) sender as Player else sender
+                parsedArgs = parseCommandArgs(mainFunction, args)
 
                 val params = mainFunction.valueParameters.slice(1 until mainFunction.valueParameters.size)
-                val requiredParams = params.filterNot { it.type.isMarkedNullable }
-                val optionalParams = params.filter { it.type.isMarkedNullable }
+                requiredParams = params.filterNot { it.type.isMarkedNullable }
+                optionalParams = params.filter { it.type.isMarkedNullable }
 
-                if (parsedArgs.filterNotNull().size < requiredParams.size) {
-                    sender.sendMessage(
-                        format("<red>Usage: /${commandInfo.name} ${requiredParams.joinToString(" ") { "<${it.name}>" }} ${optionalParams.joinToString(" ") { "[${it.name}]" }}" +
-                                "\n<gray><> = required, [] = optional")
-                    )
-                    return@CommandExecutor true
-                }
-
-                mainFunction.call(commandInstance, commandSender, *parsedArgs) as? Boolean ?: true
+                function = mainFunction
             }
             // Sub command function
             else {
@@ -114,31 +120,40 @@ class CommandBuilder(private val command: KClass<*>) {
                 val subArgs = args.copyOfRange(1, args.size)
                 val subFunction = subFunctions.firstOrNull { it.name == subCommand } ?: return@CommandExecutor false
 
-                if (subCommands[subCommand]?.isPlayerOnly == true && sender !is Player) {
-                    playerOnlyMessage(sender)
-                    return@CommandExecutor true
-                }
+                playerOnly = subCommands[subCommand]?.isPlayerOnly ?: playerOnly
 
-                if (subCommands[subCommand]?.permission?.isNotEmpty() == true && !sender.hasPermission(subCommands[subCommand]!!.permission)) {
+                if (subCommands[subCommand]!!.permission.isNotEmpty() && !sender.hasPermission(subCommands[subCommand]!!.permission)) {
                     noPermissionMessage(sender, subCommands[subCommand]!!.permissionMessage)
                     return@CommandExecutor true
                 }
 
-                val commandSender = if (subCommands[subCommand]?.isPlayerOnly == true) sender as Player else sender
-                val parsedArgs = parseCommandArgs(subFunction, subArgs)
+                commandSender = if (subCommands[subCommand]?.isPlayerOnly == true) sender as Player else sender
+                parsedArgs = parseCommandArgs(subFunction, subArgs)
 
-                val requiredParams = subFunction.valueParameters.slice(1 until subFunction.valueParameters.size).filterNot { it.isOptional }
-                val optionalParams = subFunction.valueParameters.slice(1 until subFunction.valueParameters.size).filter { it.isOptional }
-                if (parsedArgs.filterNotNull().size < requiredParams.size) {
-                    sender.sendMessage(
-                        format("<red>Usage: ${commandInfo.usage} $subCommand ${requiredParams.joinToString(" ") { "<${it.name}>" }} ${optionalParams.joinToString(" ") { "[${it.name}]" }}" +
-                                "\n<gray><> = required, [] = optional")
-                    )
-                    return@CommandExecutor true
-                }
+                requiredParams = subFunction.valueParameters.slice(1 until subFunction.valueParameters.size)
+                    .filterNot { it.isOptional }
+                optionalParams =
+                    subFunction.valueParameters.slice(1 until subFunction.valueParameters.size).filter { it.isOptional }
+                usage += " $subCommand"
 
-                subFunction.call(commandInstance, commandSender, *parsedArgs) as Boolean
+                function = subFunction
             }
+
+
+            if (playerOnly && sender !is Player) {
+                playerOnlyMessage(sender)
+                return@CommandExecutor true
+            }
+
+            usage += " ${requiredParams.joinToString(" ") { "<${it.name}>" }} ${optionalParams.joinToString(" ") { "[${it.name}]" }}"
+
+            // Not enough args given
+            if (parsedArgs.filterNotNull().size < requiredParams.size) {
+                usageMessage(sender, usage)
+                return@CommandExecutor true
+            }
+
+            function.call(commandInstance, commandSender, *parsedArgs) as? Boolean ?: true
         }
     }
 
@@ -149,7 +164,7 @@ class CommandBuilder(private val command: KClass<*>) {
 
         for ((index, arg) in args.withIndex()) {
 
-            val parameter = parameters[index]
+            val parameter = parameters.getOrNull(index) ?: break
             val type = parameter.type
 
             if (parameter.hasAnnotation<Catcher>()) {
