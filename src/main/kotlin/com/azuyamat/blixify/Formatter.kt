@@ -1,13 +1,39 @@
 package com.azuyamat.blixify
 
+import com.azuyamat.blixify.data.player.getPlayerData
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
+import org.bukkit.Bukkit
+import java.util.UUID
 
 object Formatter {
 
     private val mm = MiniMessage.miniMessage()
 
-    fun format(string: String): Component {
-        return mm.deserialize(string)
+    private val prefixComponent = format("<gray>[<blue>BLIXIFY<gray>]<reset> ")
+
+    fun format(string: String, prefix: Boolean = false): Component {
+        val message = mm.deserialize(string, chatcolorResolver())
+        return if (prefix) prefixComponent.append(message)
+        else message
+    }
+
+    fun chatcolorResolver(): TagResolver {
+        return TagResolver.resolver(
+            "chatcolor"
+        ) { args: ArgumentQueue, _ ->
+            println("args: $args")
+            val uuidString = args.popOr("uuid expected").value()
+            val uuid = UUID.fromString(uuidString)
+            val player = Bukkit.getPlayer(uuid) ?: throw IllegalArgumentException("Player $uuidString not found")
+
+            val color = player.getPlayerData().chatcolor.color
+            println("color: $color")
+            Tag.styling(TextColor.color(color.red(), color.green(), color.blue()))
+        }
     }
 }

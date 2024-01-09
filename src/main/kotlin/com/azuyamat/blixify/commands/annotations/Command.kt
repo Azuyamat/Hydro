@@ -7,4 +7,5 @@ annotation class Command(
     val usage: String = "",
     val permission: String = "",
     val permissionMessage: String = "",
+    val cooldown: Long = 0,
 )

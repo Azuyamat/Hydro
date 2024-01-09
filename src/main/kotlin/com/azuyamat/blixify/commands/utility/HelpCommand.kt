@@ -43,13 +43,10 @@ class HelpCommand {
             val permission = commandInfo.permission.takeIf { it.isNotEmpty() } ?: "None"
 
             player.sendMessage(
-                format("<${if (permission != "None") "red" else "blue"}>/$name<gray>: $description")
-            )
-            player.sendMessage(
-                format("<gray>Usage: $usage")
-            )
-            player.sendMessage(
-                format("<gray>Permission: $permission")
+                format("<${if (permission != "None") "red" else "blue"}>/$name<gray>: $description\n" +
+                        "<gray>Usage: $usage\n" +
+                        "<gray>Permission: $permission\n" +
+                        "<gray>Cooldown: ${commandInfo.cooldown} seconds")
             )
 
             val subCommands = commandInfo.subCommands.filter {it.value.permission.isNotEmpty() || player.hasPermission(it.value.permission)}
@@ -74,10 +71,10 @@ class HelpCommand {
             val description = command.description
             val requiresPermission = command.permission.isNotEmpty()
 
-            format("<hover:show_text:'<gray>Click for more help'><click:run_command:/help $name><${if (requiresPermission) "red" else "blue"}>/$name<gray>: $description</click></hover>")
+            "<hover:show_text:'<gray>Click for more help'><click:run_command:/help $name><${if (requiresPermission) "red" else "blue"}>/$name<gray>: $description</click></hover>"
         }
 
-        shownCommandsList.forEach { player.sendMessage(it) }
+        player.sendMessage(format(shownCommandsList.joinToString("\n")))
 
         return true
     }

@@ -12,6 +12,8 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
+import java.util.UUID
+import kotlin.math.round
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -22,6 +24,8 @@ import kotlin.reflect.full.valueParameters
 import com.azuyamat.blixify.commands.annotations.Command as CommandAnnotation
 
 class CommandBuilder(private val command: KClass<*>) {
+
+    val cooldownManager: MutableMap<UUID, Long> = mutableMapOf()
 
     private val info =
         command.findAnnotation<CommandAnnotation>()!! // !! is safe because we check for annotation in Commands.kt
@@ -57,6 +61,7 @@ class CommandBuilder(private val command: KClass<*>) {
         permissionMessage = info.permissionMessage,
         subCommands = subCommands,
         isPlayerOnly = mainFunction.typeParameters.firstOrNull() == Player::class.java,
+        cooldown = info.cooldown,
     )
 
     val playerOnlyMessage = { sender: CommandSender ->
@@ -87,6 +92,26 @@ class CommandBuilder(private val command: KClass<*>) {
             if (commandInfo.permission.isNotEmpty() && !sender.hasPermission(commandInfo.permission)) {
                 noPermissionMessage(sender, commandInfo.permissionMessage)
                 return@CommandExecutor true
+            }
+
+            // Make sure player is not on cooldown
+            if (commandInfo.cooldown > 0 && sender is Player) {
+                val uuid = sender.uniqueId
+                val cooldown = commandInfo.cooldown
+                val lastSent = cooldownManager[uuid] ?: 0
+                val timeSince = System.currentTimeMillis() - lastSent
+                val timeLeft = cooldown - timeSince
+
+                val timeLeftSeconds = round(timeLeft / 10.0) / 100.0
+
+                if (timeSince < cooldown) {
+                    sender.sendMessage(
+                        format(
+                            "<gray>You are on cooldown for <blue>$timeLeftSeconds seconds", true
+                        )
+                    )
+                    return@CommandExecutor true
+                }
             }
 
             val commandInstance = command.constructors.first().call()
@@ -153,7 +178,10 @@ class CommandBuilder(private val command: KClass<*>) {
                 return@CommandExecutor true
             }
 
-            function.call(commandInstance, commandSender, *parsedArgs) as? Boolean ?: true
+            val result = function.call(commandInstance, commandSender, *parsedArgs) as? Boolean ?: true
+            if (commandInfo.cooldown > 0 && sender is Player) cooldownManager[sender.uniqueId] = System.currentTimeMillis()
+
+            return@CommandExecutor result
         }
     }
 
