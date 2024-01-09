@@ -55,8 +55,6 @@ class EnchantListener(private val enchants: MutableList<Enchant<*>>) : Listener 
     @EventHandler
     fun onItemSwitch(event: PlayerItemHeldEvent) {
 
-        info("Item switch event triggered")
-
         val triggeredEnchants = enchants
             .filter { it.event == PlayerItemHeldEvent::class.java }
             .mapNotNull { it as? Enchant<PlayerItemHeldEvent> }

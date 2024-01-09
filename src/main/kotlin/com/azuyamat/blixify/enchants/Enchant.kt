@@ -31,7 +31,6 @@ abstract class Enchant<E: Event>(
         if (!willProc) return
         if (!matchesSituation(event)) return
 
-        info("Enchant ${enchant.name} procced for ${player.name} at level $level")
         onProc(event, player)
     }
 
