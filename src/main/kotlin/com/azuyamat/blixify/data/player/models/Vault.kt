@@ -1,4 +1,4 @@
-package com.azuyamat.blixify.data.player.economy
+package com.azuyamat.blixify.data.player.models
 
 data class Vault (
     var balance: Double = 0.0,

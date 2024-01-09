@@ -47,7 +47,10 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
                 // Get local file
                 val fileName = "$uuid.json"
                 val dataFolder = instance.dataFolder
-                val file = File(dataFolder, fileName)
+                val playersFolder = File(dataFolder, "players")
+                // Create players folder if it doesn't exist
+                playersFolder.mkdirs()
+                val file = File(playersFolder, fileName)
 
                 // If file doesn't exist, return default data
                 if (!file.exists()) {
@@ -66,5 +69,10 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
 
     override fun cache(data: PlayerData) {
         cache[data.uuid] = data
+    }
+
+    override fun cache(uuid: UUID) {
+        val data = cache[uuid] ?: load(uuid)
+        cache(data)
     }
 }

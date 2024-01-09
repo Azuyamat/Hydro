@@ -1,4 +1,4 @@
-package com.azuyamat.blixify.data
+package com.azuyamat.blixify.enums
 
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor

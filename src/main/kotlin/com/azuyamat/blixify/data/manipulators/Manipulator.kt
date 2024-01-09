@@ -17,6 +17,9 @@ interface Manipulator<T : Data> {
     // Cache data
     fun cache(data: T)
 
+    // Cache data from UUID
+    fun cache(data: UUID)
+
     // Un-cache data
     fun unCache(uuid: UUID) {
         cache.remove(uuid)
