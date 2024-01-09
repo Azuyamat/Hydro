@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
     name = "test",
     description = "Test command",
     aliases = ["t"],
-    permission = "blixify.test",
+    permission = "blixify.test"
 )
 class TestCommand {
 

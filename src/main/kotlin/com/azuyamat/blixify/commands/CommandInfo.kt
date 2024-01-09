@@ -10,7 +10,7 @@ data class CommandInfo(
     val permission: String = "",
     val permissionMessage: String = PERMISSION_MESSAGE,
     val isPlayerOnly: Boolean = false,
-    val subCommands: Map<String, SubCommandInfo> = mutableMapOf(),
+    val subCommands: Map<String, SubCommandInfo> = mutableMapOf()
 )
 
 data class SubCommandInfo(
@@ -18,5 +18,5 @@ data class SubCommandInfo(
     val description: String = "",
     val permission: String = "",
     val permissionMessage: String = PERMISSION_MESSAGE,
-    val isPlayerOnly: Boolean = false,
+    val isPlayerOnly: Boolean = false
 )
