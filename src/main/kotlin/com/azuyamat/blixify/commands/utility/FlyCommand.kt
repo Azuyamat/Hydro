@@ -1,4 +1,4 @@
-package com.azuyamat.blixify.commands.admin
+package com.azuyamat.blixify.commands.utility
 
 import com.azuyamat.blixify.commands.annotations.Command
 import org.bukkit.entity.Player
@@ -14,13 +14,14 @@ import com.azuyamat.blixify.Formatter.format
 class FlyCommand {
 
     fun onCommand(player: Player) {
-        if(player.isFlying){
-            player.sendMessage(format("<red>Flight Disabled!"))
-            player.allowFlight = !player.isFlying
-            return
-        } else{
-            player.sendMessage(format("<green>Flight Enabled!"))
-            player.allowFlight = !player.isFlying
-        }
+
+        player.allowFlight = !player.allowFlight
+        val status = if (player.allowFlight) "enabled" else "disabled"
+        val color = if (player.allowFlight) "<green>" else "<red>"
+        if (player.isFlying && !player.allowFlight) player.isFlying = false
+        else if (!player.isFlying && player.allowFlight) player.isFlying = true
+        player.sendMessage(
+            format("${color}Flight has been $status")
+        )
     }
 }
