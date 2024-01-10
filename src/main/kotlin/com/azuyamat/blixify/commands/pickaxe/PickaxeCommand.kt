@@ -4,6 +4,7 @@ import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.pickaxeManager
 import org.bukkit.entity.Player
 import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.pickaxe.updateLore
 import org.bukkit.inventory.ItemFlag
 
 @Command(
@@ -24,7 +25,7 @@ class PickaxeCommand {
             )
             return
         }
-        val item = pickaxe.create()
+        val item = pickaxe.create().updateLore(player)
         player.inventory.addItem(item)
 
         player.sendMessage(

@@ -5,6 +5,7 @@ import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.commands.commands
 import org.bukkit.entity.Player
+import kotlin.reflect.KParameter
 
 const val COMMANDS_PER_PAGE = 5
 
@@ -43,7 +44,7 @@ class HelpCommand {
             val permission = commandInfo.permission.takeIf { it.isNotEmpty() } ?: "None"
 
             player.sendMessage(
-                format("<${if (permission != "None") "red" else "blue"}>/$name<gray>: $description\n" +
+                format("<hover:show_text:'${commandInfo.argumentTooltip}'><${if (permission != "None") "red" else "blue"}>/$name</hover><gray>: $description\n" +
                         "<gray>Usage: $usage\n" +
                         "<gray>Permission: $permission\n" +
                         "<gray>Cooldown: ${commandInfo.cooldown} seconds")
@@ -55,7 +56,7 @@ class HelpCommand {
                 val subDescription = subCommand.value.description.takeIf { it.isNotEmpty() } ?: "No description"
                 val requiresPermission = subCommand.value.permission.isNotEmpty() || commandInfo.permission.isNotEmpty()
 
-                format("<${if (requiresPermission) "red" else "blue"}>/$name $subName<gray>: $subDescription")
+                format("<hover:show_text:'${subCommand.value.argumentTooltip}'><${if (requiresPermission) "red" else "blue"}>/$name $subName</hover><gray>: $subDescription")
             }
             subCommandsList.forEach { player.sendMessage(it) }
 
@@ -77,5 +78,13 @@ class HelpCommand {
         player.sendMessage(format(shownCommandsList.joinToString("\n")))
 
         return true
+    }
+}
+
+fun generateParameterTooltip(parameters: List<KParameter>): String {
+    return parameters.joinToString("<newline>") {
+        val name = if (it.type.isMarkedNullable) "[${it.name}]" else "<${it.name}>" // Optional parameters are surrounded by []
+        val type = it.type.classifier.toString().split(".").last()
+        "<gray>$name : <blue>$type"
     }
 }

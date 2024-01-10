@@ -1,8 +1,10 @@
 package com.azuyamat.blixify.data.manipulators
 
 import com.azuyamat.blixify.data.player.PlayerData
+import com.azuyamat.blixify.data.player.SAVE_INTERVAL
 import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.gson
+import com.azuyamat.blixify.parse
 import java.io.File
 import java.util.*
 
@@ -11,6 +13,15 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
     override var cache = mutableMapOf<UUID, PlayerData>()
 
     override fun save(data: PlayerData, destination: Destination) {
+
+        data.shouldSave = System.currentTimeMillis() + SAVE_INTERVAL
+
+        val player = instance.server.getPlayer(data.uuid)
+        if (player?.isOnline == true) {
+            // If player is online, send action bar
+            player.sendActionBar("Your data is being saved".parse(true))
+        }
+
         when (destination) {
             Destination.LOCAL -> {
                 // Get local file
@@ -44,6 +55,12 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
             return cache[uuid]!! // !! is safe because we checked if it contains the key
         }
 
+        val player = instance.server.getPlayer(uuid)
+        if (player?.isOnline == true) {
+            // If player is online, send action bar
+            player.sendActionBar("Your data is being loaded".parse(true))
+        }
+
         // Otherwise, load data from destination
         return when (destination) {
             Destination.LOCAL -> {
@@ -62,7 +79,9 @@ object PlayerDataManipulator : Manipulator<PlayerData> {
 
                 // Read data from file
                 val json = file.readText()
-                gson.fromJson(json, PlayerData::class.java)
+                val data = gson.fromJson(json, PlayerData::class.java)
+                cache(data)
+                data
             }
             Destination.MONGO -> {
                 TODO()

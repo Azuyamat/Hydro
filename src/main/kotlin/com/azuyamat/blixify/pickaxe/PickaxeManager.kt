@@ -1,8 +1,10 @@
 package com.azuyamat.blixify.pickaxe
 
 import com.azuyamat.blixify.Logger.warning
+import com.azuyamat.blixify.instance
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -81,6 +83,7 @@ class   PickaxeManager(private val plugin: JavaPlugin) {
                 enchantments = parsedEnchantments,
                 unbreakable = unbreakable,
                 flags = parsedFlags,
+                namespacedKey = NamespacedKey(instance, key.uppercase().plus("_PICKAXE"))
             )
         }
     }

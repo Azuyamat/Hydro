@@ -1,12 +1,14 @@
 package com.azuyamat.blixify.commands
 
 import com.azuyamat.blixify.Formatter.format
-import com.azuyamat.blixify.Logger.info
 import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.commands.completions.Completions.getCompletion
+import com.azuyamat.blixify.data.manipulators.PlayerDataManipulator.save
+import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.instance
+import com.azuyamat.blixify.commands.utility.generateParameterTooltip
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -47,6 +49,7 @@ class CommandBuilder(private val command: KClass<*>) {
             permission = subInfo.permission,
             permissionMessage = subInfo.permissionMessage,
             isPlayerOnly = it.typeParameters.firstOrNull() == Player::class.java,
+            argumentTooltip = generateParameterTooltip(it.valueParameters.slice(1 until it.valueParameters.size))
         )
 
         name to info
@@ -62,6 +65,7 @@ class CommandBuilder(private val command: KClass<*>) {
         subCommands = subCommands,
         isPlayerOnly = mainFunction.typeParameters.firstOrNull() == Player::class.java,
         cooldown = info.cooldown,
+        argumentTooltip = generateParameterTooltip(mainFunction.valueParameters.slice(1 until mainFunction.valueParameters.size))
     )
 
     val playerOnlyMessage = { sender: CommandSender ->
@@ -133,8 +137,8 @@ class CommandBuilder(private val command: KClass<*>) {
                 parsedArgs = parseCommandArgs(mainFunction, args)
 
                 val params = mainFunction.valueParameters.slice(1 until mainFunction.valueParameters.size)
-                requiredParams = params.filterNot { it.type.isMarkedNullable }
-                optionalParams = params.filter { it.type.isMarkedNullable }
+                requiredParams = params.filterNot { it.type.isMarkedNullable || it.isOptional }
+                optionalParams = params.filter { it.type.isMarkedNullable || it.isOptional }
 
                 function = mainFunction
             }
@@ -156,9 +160,9 @@ class CommandBuilder(private val command: KClass<*>) {
                 parsedArgs = parseCommandArgs(subFunction, subArgs)
 
                 requiredParams = subFunction.valueParameters.slice(1 until subFunction.valueParameters.size)
-                    .filterNot { it.isOptional }
+                    .filterNot { it.isOptional || it.type.isMarkedNullable }
                 optionalParams =
-                    subFunction.valueParameters.slice(1 until subFunction.valueParameters.size).filter { it.isOptional }
+                    subFunction.valueParameters.slice(1 until subFunction.valueParameters.size).filter { it.isOptional || it.type.isMarkedNullable }
                 usage += " $subCommand"
 
                 function = subFunction
@@ -179,7 +183,13 @@ class CommandBuilder(private val command: KClass<*>) {
             }
 
             val result = function.call(commandInstance, commandSender, *parsedArgs) as? Boolean ?: true
-            if (commandInfo.cooldown > 0 && sender is Player) cooldownManager[sender.uniqueId] = System.currentTimeMillis()
+
+            // Save player data if needed
+            if (sender is Player) {
+                if (commandInfo.cooldown > 0) cooldownManager[sender.uniqueId] = System.currentTimeMillis()
+                val playerData = sender.getPlayerData()
+                if (playerData.shouldSave < System.currentTimeMillis()) save(playerData)
+            }
 
             return@CommandExecutor result
         }
@@ -200,14 +210,18 @@ class CommandBuilder(private val command: KClass<*>) {
                 break
             }
 
+            val addToArray = { value: Any? ->
+                parsedArgs[index] = value
+            }
+
             when (type.classifier) {
-                Int::class -> parsedArgs[index] = arg.toIntOrNull()
-                Double::class -> parsedArgs[index] = arg.toDoubleOrNull()
-                Float::class -> parsedArgs[index] = arg.toFloatOrNull()
-                Boolean::class -> parsedArgs[index] = arg.toBoolean()
-                Player::class -> parsedArgs[index] = instance.server.getPlayer(arg)
-                OfflinePlayer::class -> parsedArgs[index] = instance.server.getOfflinePlayer(arg)
-                else -> parsedArgs[index] = arg
+                Int::class -> addToArray(arg.toIntOrNull())
+                Double::class -> addToArray(arg.toDoubleOrNull())
+                Float::class -> addToArray(arg.toFloatOrNull())
+                Boolean::class -> addToArray(arg.toBoolean())
+                Player::class -> addToArray(instance.server.getPlayer(arg))
+                OfflinePlayer::class -> addToArray(instance.server.getOfflinePlayer(arg))
+                else -> addToArray(arg)
             }
         }
 

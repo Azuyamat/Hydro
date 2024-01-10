@@ -1,9 +1,8 @@
-package com.azuyamat.blixify.commands.admin
+package com.azuyamat.blixify.commands.utility
 
 import com.azuyamat.blixify.Formatter.format
 import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.Command
-import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.sanitize
 import org.bukkit.entity.Player
 import java.util.*
@@ -22,7 +21,6 @@ class MessageCommand {
     fun onCommand(player: Player, receiver: Player, @Catcher message: String) {
 
         interact(player, receiver, message)
-        latestMessages[player.uniqueId] = receiver.uniqueId
     }
 }
 
@@ -46,11 +44,14 @@ class ReplyCommand {
 
 fun interact(player: Player, receiver: Player, message: String) {
 
+    latestMessages[player.uniqueId] = receiver.uniqueId
+    latestMessages[receiver.uniqueId] = player.uniqueId
+
     val sanitized = message.sanitize()
     receiver.sendMessage(format(
-        "<dark_gray>[<blue><bold>✉<reset><dark_gray>] <gray>from <blue>${player.name}<gray>: $sanitized"
+        "<dark_gray>[<blue>✉<dark_gray>] <gray>from <blue>${player.name}<gray>: $sanitized"
     ))
     player.sendMessage(format(
-        "<dark_gray>[<blue><bold>✉<reset><dark_gray>] <gray>to <blue>${player.name}<gray>: $sanitized"
+        "<dark_gray>[<blue>✉<dark_gray>] <gray>to <blue>${player.name}<gray>: $sanitized"
     ))
 }

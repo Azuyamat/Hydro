@@ -5,6 +5,7 @@ import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.pickaxeManager
 import org.bukkit.entity.Player
 import com.azuyamat.blixify.commands.annotations.Command
+import com.azuyamat.blixify.pickaxe.updateLore
 
 @Command(
     name = "pickaxes",
@@ -27,9 +28,8 @@ class PickaxesCommand {
     }
 
     @SubCommand("reload", "Reload pickaxe registry")
-    fun reload(sender: Player, silent: Boolean = true): Boolean {
-        if (!silent)
-            sender.sendMessage("Reload pickaxes (player)")
+    fun reload(sender: Player): Boolean {
+        sender.sendMessage("Reload pickaxes (player)")
         pickaxeManager.reload()
         return true
     }
@@ -42,8 +42,8 @@ class PickaxesCommand {
             player.sendMessage("Pickaxe $id not found")
             return true
         }
-        val item = pickaxe.create()
         val target = receiver ?: player
+        val item = pickaxe.create().updateLore(target)
         target.inventory.addItem(item)
 
         return true

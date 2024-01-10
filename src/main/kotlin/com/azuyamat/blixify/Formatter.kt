@@ -17,7 +17,7 @@ object Formatter {
 
     private val mm = MiniMessage.miniMessage()
 
-    private val prefixComponent = format("<gray>[<blue>BLIXIFY<gray>]<reset> ")
+    private val prefixComponent = format("<gray>[<blue>BLIXIFY<gray>]<reset> <gray>")
 
     fun format(string: String, prefix: Boolean = false): Component {
         val message = mm.deserialize(string, chatcolorResolver())
