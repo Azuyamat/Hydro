@@ -47,6 +47,12 @@ class EnchantListener(private val enchants: MutableList<Enchant<*>>) : Listener 
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
 
+        val item = event.player.inventory.itemInMainHand
+
+        // Make sure the item is a pickaxe
+        if (!item.type.name.endsWith("_PICKAXE")) return
+        event.isDropItems = false
+
         val triggeredEnchants = enchants
             .filter { it.event == BlockBreakEvent::class.java }
             .mapNotNull { it as? Enchant<BlockBreakEvent> }
