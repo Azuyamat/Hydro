@@ -54,7 +54,7 @@ class EnchantCommand {
         }
 
         val currentLevel = target.getPlayerData().enchants[enchantment] ?: 0
-        val newLevel = max(currentLevel - level, 0)
+        val newLevel = max(currentLevel + level, 0)
 
         val data = target.getPlayerData()
         data.enchants[enchantment] = newLevel
