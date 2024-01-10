@@ -2,8 +2,6 @@ package com.azuyamat.blixify.events.chat
 
 import com.azuyamat.blixify.data.player.getPlayerData
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import com.azuyamat.blixify.Formatter.format

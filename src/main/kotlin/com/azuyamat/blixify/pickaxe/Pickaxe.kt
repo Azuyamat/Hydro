@@ -5,7 +5,6 @@ import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.parse
 import com.azuyamat.blixify.pickaxeManager
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material

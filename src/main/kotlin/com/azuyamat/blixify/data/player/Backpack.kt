@@ -1,4 +1,4 @@
-package com.azuyamat.blixify.data.player.models
+package com.azuyamat.blixify.data.player
 
 import org.bukkit.Material
 

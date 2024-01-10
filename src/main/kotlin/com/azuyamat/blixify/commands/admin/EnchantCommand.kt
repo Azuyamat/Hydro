@@ -9,7 +9,6 @@ import com.azuyamat.blixify.enums.Enchant
 import org.bukkit.entity.Player
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.math.min
 
 @Command(
     name = "enchant",

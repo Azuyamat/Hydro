@@ -14,10 +14,10 @@ class Fortune : Enchant<BlockBreakEvent>(EnchantEnum.FORTUNE, BlockBreakEvent::c
 
         val level = getLevel(player).toInt()
 
-        // fortune proc
         val backpack = player.getPlayerData().backpack
-        val rng = (1..level + 1)
-        val mat = event.block.Material
-        backpack.addItem(mat, level)
+        val chance = (1..level + 1)
+        val material = event.block.type
+
+        backpack.addItem(material, level)
     }
 }
