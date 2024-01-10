@@ -1,6 +1,7 @@
 package com.azuyamat.blixify.data.player
 
 import org.bukkit.Material
+import kotlin.math.min
 
 typealias BackpackItem = Material
 data class Backpack(
@@ -9,7 +10,11 @@ data class Backpack(
 ) {
 
     fun addItem(item: BackpackItem, amount: Int) {
-        items[item] = items.getOrDefault(item, 0) + amount
+
+        val currentAmountTotal = items.map { it.value }.sum()
+        val currentAmountLocal = items.getOrDefault(item, 0)
+        val amountToAdd = min(amount, size - currentAmountTotal)
+        items[item] = currentAmountLocal + amountToAdd
     }
 
     fun removeItem(item: BackpackItem, amount: Int) {

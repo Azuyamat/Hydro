@@ -15,9 +15,9 @@ class Fortune : Enchant<BlockBreakEvent>(EnchantEnum.FORTUNE, BlockBreakEvent::c
         val level = getLevel(player).toInt()
 
         val backpack = player.getPlayerData().backpack
-        val chance = (1..level + 1)
+        val amount = (1..level + 1).random()
         val material = event.block.type
 
-        backpack.addItem(material, level)
+        backpack.addItem(material, amount)
     }
 }
