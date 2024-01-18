@@ -5,10 +5,10 @@ import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.commands.completions.Completions.getCompletion
-import com.azuyamat.blixify.data.manipulators.PlayerDataManipulator.save
+import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator.save
 import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.instance
-import com.azuyamat.blixify.commands.utility.generateParameterTooltip
+import com.azuyamat.blixify.commands.impl.utility.generateParameterTooltip
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

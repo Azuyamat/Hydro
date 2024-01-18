@@ -7,4 +7,5 @@ annotation class SubCommand(
     val permission: String = "",
     val permissionMessage: String = "You do not have permission to use this command",
     val isPlayerOnly: Boolean = false,
+    val cooldown: Long = 0,
 )

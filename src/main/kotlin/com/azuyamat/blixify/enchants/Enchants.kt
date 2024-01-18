@@ -13,7 +13,7 @@ import org.reflections.Reflections
 
 object Enchants {
 
-    private val enchantEvents: MutableList<Enchant<*>> = mutableListOf()
+    val enchantEvents: MutableList<Enchant<*>> = mutableListOf()
 
     fun registerEnchants() {
 

@@ -20,7 +20,7 @@ enum class Enchant(
     GREED(3, 0.05, 0.1, 0.01, color = NamedTextColor.DARK_GREEN),
     HASTE(3, 0.05, 0.1, 0.01, color = NamedTextColor.DARK_AQUA),
     JACKHAMMER(3, 0.05, 0.1, 0.01, color = NamedTextColor.DARK_BLUE),
-    NUKE(3, 0.05, 0.1, 0.01, color = NamedTextColor.LIGHT_PURPLE),
+    NUKE(30000, 0.05, 1.0, 0.01, color = NamedTextColor.LIGHT_PURPLE),
     SPEED(3, 0.05, 0.1, 0.01, color = NamedTextColor.AQUA),
     TOKEN_FINDER(3, 0.05, 0.1, 0.01, color = NamedTextColor.GREEN),
 }

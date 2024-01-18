@@ -4,6 +4,7 @@ import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.parse
 import com.azuyamat.blixify.pickaxeManager
+import com.azuyamat.blixify.titleCase
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -65,7 +66,7 @@ fun ItemStack.updateLore(player: Player) : ItemStack {
     val lore = info.lore.toMutableList()
     val enchantLore = playerData.enchants.map {
 
-        val name = it.key.name
+        val name = it.key.name.titleCase()
         val level = it.value
         val parsedBar = Component.text().content("|").color(it.key.color).decoration(TextDecoration.BOLD, true).build()
         val parsedLevel = Component.text().content(level.toString()).color(it.key.color).decoration(TextDecoration.BOLD, false).build()

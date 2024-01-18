@@ -1,15 +1,17 @@
 package com.azuyamat.blixify.enchants
 
+import com.azuyamat.blixify.Logger.info
 import com.azuyamat.blixify.data.player.getPlayerData
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerEvent
+import java.awt.SystemColor.info
 import kotlin.math.max
 import com.azuyamat.blixify.enums.Enchant as EnchantEnum
 
 abstract class Enchant<E: Event>(
-    private val enchant: EnchantEnum,
+    val enchant: EnchantEnum,
     val event: Class<E>,
 ) {
 
@@ -23,11 +25,12 @@ abstract class Enchant<E: Event>(
 
         val enchants = player.getPlayerData().enchants
         val level = enchants[enchant] ?: return
-        val willProc = willProc(level, enchant.isPassive)
+        val willProc = willProc(level, enchant.isPassive, player)
 
         if (!willProc) return
         if (!matchesSituation(event)) return
 
+        info("Enchant ${enchant.name} procced for ${player.name}")
         onProc(event, player)
     }
 
@@ -48,9 +51,10 @@ abstract class Enchant<E: Event>(
         return max(currentChance, maxChance)
     }
 
-    private fun willProc(level: Long, isPassive: Boolean): Boolean {
+    private fun willProc(level: Long, isPassive: Boolean, player: Player): Boolean {
 
         if (isPassive) return true
+        if (player.isSneaking) return true
 
         val chance = calculateChance(level)
         val random = Math.random() * 100

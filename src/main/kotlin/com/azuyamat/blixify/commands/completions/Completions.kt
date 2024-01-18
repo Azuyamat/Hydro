@@ -9,7 +9,7 @@ object Completions {
     private val completions = mutableMapOf<String, Completion>()
 
     fun registerCompletions() {
-        val commandsPackage = Reflections("${commandsPackageName}.completions")
+        val commandsPackage = Reflections("com.azuyamat.blixify.commands.completions.impl")
         val completions = commandsPackage.getSubTypesOf(Completion::class.java)
 
         for (completion in completions) {

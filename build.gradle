@@ -18,14 +18,25 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "jitpack"
+        url = "https://jitpack.io"
+    }
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect"
-    api "org.reflections:reflections:0.9.12"
-    implementation "net.kyori:adventure-text-minimessage:4.14.0"
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT" // Paper API
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8" // Kotlin Standard Library
+    implementation "org.jetbrains.kotlin:kotlin-reflect" // Kotlin Reflection
+    api "org.reflections:reflections:0.9.12" // Reflections
+    implementation "net.kyori:adventure-text-minimessage:4.14.0" // Adventure MiniMessage
+    implementation 'fr.mrmicky:fastboard:2.0.2' // FastBoard
+
+    // FAWE
+    implementation(platform("com.intellectualsites.bom:bom-newest:1.40")) // Ref: https://github.com/IntellectualSites/bom
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
+
+    implementation("com.github.DebitCardz:mc-chestui-plus:1.4.5") // ChestUI+ by DebitCardz
 }
 
 def targetJavaVersion = 17
@@ -73,4 +84,8 @@ tasks.copyJar.finalizedBy(tasks.startServer)
 
 build {
     dependsOn shadowJar
+}
+
+shadowJar {
+    relocate 'fr.mrmicky.fastboard', 'com.azuyamat.fastboard'
 }
