@@ -1,6 +1,6 @@
 package com.azuyamat.blixify.commands
 
-import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.helpers.Formatter.format
 import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.commands.annotations.Tab
@@ -28,6 +28,7 @@ import com.azuyamat.blixify.commands.annotations.Command as CommandAnnotation
 class CommandBuilder(private val command: KClass<*>) {
 
     val cooldownManager: MutableMap<UUID, Long> = mutableMapOf()
+    val subCommandCooldownManager: MutableMap<UUID, MutableMap<String, Long>> = mutableMapOf()
 
     private val info =
         command.findAnnotation<CommandAnnotation>()!! // !! is safe because we check for annotation in Commands.kt
@@ -49,7 +50,8 @@ class CommandBuilder(private val command: KClass<*>) {
             permission = subInfo.permission,
             permissionMessage = subInfo.permissionMessage,
             isPlayerOnly = it.typeParameters.firstOrNull() == Player::class.java,
-            argumentTooltip = generateParameterTooltip(it.valueParameters.slice(1 until it.valueParameters.size))
+            argumentTooltip = generateParameterTooltip(it.valueParameters.slice(1 until it.valueParameters.size)),
+            cooldown = subInfo.cooldown
         )
 
         name to info
@@ -111,7 +113,7 @@ class CommandBuilder(private val command: KClass<*>) {
                 if (timeSince < cooldown) {
                     sender.sendMessage(
                         format(
-                            "<gray>You are on cooldown for <blue>$timeLeftSeconds seconds", true
+                            "<gray>You are on cooldown for <main>$timeLeftSeconds seconds", true
                         )
                     )
                     return@CommandExecutor true
@@ -124,6 +126,7 @@ class CommandBuilder(private val command: KClass<*>) {
             val commandSender: CommandSender
             val parsedArgs: Array<*>
             var usage = "/${commandInfo.name}"
+            val isSubCommand: Boolean
 
             val requiredParams: List<KParameter>
             val optionalParams: List<KParameter>
@@ -132,6 +135,8 @@ class CommandBuilder(private val command: KClass<*>) {
 
             // Main command function
             if (args.isEmpty() || subCommands.isEmpty()) {
+
+                isSubCommand = false
 
                 commandSender = if (commandInfo.isPlayerOnly) sender as Player else sender
                 parsedArgs = parseCommandArgs(mainFunction, args)
@@ -144,16 +149,37 @@ class CommandBuilder(private val command: KClass<*>) {
             }
             // Sub command function
             else {
-
+                isSubCommand = true
                 val subCommand = args[0]
                 val subArgs = args.copyOfRange(1, args.size)
                 val subFunction = subFunctions.firstOrNull { it.name == subCommand } ?: return@CommandExecutor false
+                val subCommandInfo = subCommands[subCommand] ?: return@CommandExecutor false
 
-                playerOnly = subCommands[subCommand]?.isPlayerOnly ?: playerOnly
+                playerOnly = subCommandInfo.isPlayerOnly
 
-                if (subCommands[subCommand]!!.permission.isNotEmpty() && !sender.hasPermission(subCommands[subCommand]!!.permission)) {
+                if (subCommandInfo.permission.isNotEmpty() && !sender.hasPermission(subCommandInfo.permission)) {
                     noPermissionMessage(sender, subCommands[subCommand]!!.permissionMessage)
                     return@CommandExecutor true
+                }
+
+                // Make sure player is not on cooldown
+                if (subCommandInfo.cooldown > 0 && sender is Player) {
+                    val uuid = sender.uniqueId
+                    val cooldown = subCommandInfo.cooldown
+                    val lastSent = subCommandCooldownManager[uuid]?.get(subCommandInfo.name.lowercase()) ?: 0
+                    val timeSince = System.currentTimeMillis() - lastSent
+                    val timeLeft = cooldown - timeSince
+
+                    val timeLeftSeconds = round(timeLeft / 10.0) / 100.0
+
+                    if (timeSince < cooldown) {
+                        sender.sendMessage(
+                            format(
+                                "<gray>You are on cooldown for <main>$timeLeftSeconds seconds", true
+                            )
+                        )
+                        return@CommandExecutor true
+                    }
                 }
 
                 commandSender = if (subCommands[subCommand]?.isPlayerOnly == true) sender as Player else sender
@@ -186,9 +212,17 @@ class CommandBuilder(private val command: KClass<*>) {
 
             // Save player data if needed
             if (sender is Player) {
-                if (commandInfo.cooldown > 0) cooldownManager[sender.uniqueId] = System.currentTimeMillis()
                 val playerData = sender.getPlayerData()
-                if (playerData.shouldSave < System.currentTimeMillis()) save(playerData)
+                if (playerData.shouldSave < System.currentTimeMillis())
+                    save(playerData)
+                if (commandInfo.cooldown > 0)
+                    cooldownManager[sender.uniqueId] = System.currentTimeMillis()
+                if (isSubCommand) {
+                    val subName = args.getOrNull(0)?.lowercase() ?: return@CommandExecutor result
+                    val subCommandCooldowns = subCommandCooldownManager[sender.uniqueId] ?: mutableMapOf()
+                    subCommandCooldowns[subName] = System.currentTimeMillis()
+                    subCommandCooldownManager[sender.uniqueId] = subCommandCooldowns
+                }
             }
 
             return@CommandExecutor result

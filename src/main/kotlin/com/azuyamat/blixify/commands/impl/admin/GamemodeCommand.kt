@@ -1,6 +1,6 @@
 package com.azuyamat.blixify.commands.impl.admin
 
-import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.helpers.Formatter.format
 import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.commands.annotations.Tab
 import org.bukkit.GameMode

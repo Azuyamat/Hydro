@@ -2,8 +2,7 @@ package com.azuyamat.blixify.commands.impl.utility
 
 import com.azuyamat.blixify.commands.annotations.Command
 import org.bukkit.entity.Player
-import com.azuyamat.blixify.Formatter.format
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 
 
 @Command(

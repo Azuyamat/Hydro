@@ -2,14 +2,16 @@ package com.azuyamat.blixify.guis.cell
 
 import com.azuyamat.blixify.data.cell.getCell
 import com.azuyamat.blixify.data.manipulators.impl.CellDataManipulator
+import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator
+import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.enums.CellRank
 import com.azuyamat.blixify.guis.utility.confirmGUI
 import com.azuyamat.blixify.instance
-import com.azuyamat.blixify.parse
-import com.azuyamat.blixify.titleCase
+import com.azuyamat.blixify.helpers.parse
+import com.azuyamat.blixify.helpers.titleCase
 import me.tech.mcchestui.GUI
 import me.tech.mcchestui.GUIType
-import me.tech.mcchestui.item.guiHeadItem
+import me.tech.mcchestui.item.headItem
 import me.tech.mcchestui.item.item
 import me.tech.mcchestui.utils.gui
 import me.tech.mcchestui.utils.openGUI
@@ -36,7 +38,7 @@ fun cellGUI(player: Player) : GUI {
 
         // Player information
         slot(2, 2) {
-            item = guiHeadItem {
+            item = headItem {
                 name = "<main>» <gray>Information".parse()
                 lore = listOf(
                     Component.empty(),
@@ -45,6 +47,7 @@ fun cellGUI(player: Player) : GUI {
                     "<gray>(( Click to teleport ))".parse()
                 )
                 skullOwner = player
+                playerProfile = player.playerProfile
                 onClick {
                     player.teleport(cell.settings.location)
                     player.closeInventory()
@@ -173,6 +176,15 @@ fun cellGUI(player: Player) : GUI {
                 onClick {
                     val confirmGUI = confirmGUI(player, "<red>Delete this cell?".parse()) {
                         val cell = player.getCell() ?: return@confirmGUI
+
+                        // Set cell id of all members to null
+                        for ((uuid, _) in cell.members) {
+                            val localPlayer = instance.server.getPlayer(uuid) ?: continue
+                            val data = localPlayer.getPlayerData()
+                            data.cellId = null
+                            data.save()
+                        }
+
                         val bound = cell.bound.toCellBound()
                         bound.clearBlocks()
                         CellDataManipulator.delete(cell)

@@ -2,7 +2,7 @@ package com.azuyamat.blixify.commands.impl.utility
 
 import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.data.player.getPlayerData
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import org.bukkit.entity.Player
 
 @Command(
@@ -23,7 +23,7 @@ class StatsCommand {
             "<gray>UUID: <main>${target.uniqueId}",
             "<gray>Deaths: <main>${data.stats.deaths}",
             "<gray>Kills: <main>${data.stats.kills}",
-            "<gray>Mined: <main>${data.stats.blocksMined}",
+            "<gray>Mined: <main>${data.stats.blocksMinedNaturally}",
             "<gray>Balance: <main>${data.vault.balance}",
             "<gray>Tokens: <main>${data.vault.tokens}",
             "<gray>---------------------"

@@ -1,6 +1,6 @@
 package com.azuyamat.blixify
 
-import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.helpers.Formatter.format
 
 fun main() {
 

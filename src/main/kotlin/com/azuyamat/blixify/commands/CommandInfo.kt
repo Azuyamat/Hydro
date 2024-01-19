@@ -21,5 +21,6 @@ data class SubCommandInfo(
     val permission: String = "",
     val permissionMessage: String = PERMISSION_MESSAGE,
     val isPlayerOnly: Boolean = false,
-    val argumentTooltip: String = ""
+    val argumentTooltip: String = "",
+    val cooldown: Long = 0
 )

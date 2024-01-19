@@ -1,6 +1,6 @@
 package com.azuyamat.blixify.cells
 
-import com.azuyamat.blixify.Logger.info
+import com.azuyamat.blixify.helpers.Logger.info
 import com.azuyamat.blixify.instance
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter

@@ -6,7 +6,7 @@ import com.azuyamat.blixify.data.player.PlayerData
 import com.azuyamat.blixify.data.player.SAVE_INTERVAL
 import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.gson
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import java.io.File
 import java.util.*
 

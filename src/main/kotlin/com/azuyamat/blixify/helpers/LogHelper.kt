@@ -1,4 +1,6 @@
-package com.azuyamat.blixify
+package com.azuyamat.blixify.helpers
+
+import com.azuyamat.blixify.instance
 
 const val PREFIX = "[BLIXIFY] "
 

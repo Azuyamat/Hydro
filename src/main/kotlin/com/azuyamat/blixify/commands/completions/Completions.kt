@@ -1,7 +1,6 @@
 package com.azuyamat.blixify.commands.completions
 
-import com.azuyamat.blixify.Logger.success
-import com.azuyamat.blixify.commandsPackageName
+import com.azuyamat.blixify.helpers.Logger.success
 import org.reflections.Reflections
 
 object Completions {

@@ -1,10 +1,9 @@
 package com.azuyamat.blixify.enchants
 
-import com.azuyamat.blixify.Logger.info
-import com.azuyamat.blixify.Logger.success
+import com.azuyamat.blixify.helpers.Logger.info
+import com.azuyamat.blixify.helpers.Logger.success
 import com.azuyamat.blixify.enchantsPackageName
 import com.azuyamat.blixify.instance
-import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent

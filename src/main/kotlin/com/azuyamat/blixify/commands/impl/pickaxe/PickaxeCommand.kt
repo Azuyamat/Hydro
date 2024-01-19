@@ -3,10 +3,9 @@ package com.azuyamat.blixify.commands.impl.pickaxe
 import com.azuyamat.blixify.commands.annotations.Command
 import com.azuyamat.blixify.pickaxeManager
 import org.bukkit.entity.Player
-import com.azuyamat.blixify.Formatter.format
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.Formatter.format
+import com.azuyamat.blixify.helpers.parse
 import com.azuyamat.blixify.pickaxe.updateLore
-import org.bukkit.inventory.ItemFlag
 
 @Command(
     name = "pickaxe",

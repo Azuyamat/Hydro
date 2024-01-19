@@ -1,7 +1,7 @@
 package com.azuyamat.blixify.events.impl.chat
 
-import com.azuyamat.blixify.Logger.info
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.Logger.info
+import com.azuyamat.blixify.helpers.parse
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

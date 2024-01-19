@@ -1,9 +1,9 @@
 package com.azuyamat.blixify.commands.impl.utility
 
-import com.azuyamat.blixify.Formatter.format
+import com.azuyamat.blixify.helpers.Formatter.format
 import com.azuyamat.blixify.commands.annotations.Catcher
 import com.azuyamat.blixify.commands.annotations.Command
-import com.azuyamat.blixify.sanitize
+import com.azuyamat.blixify.helpers.sanitize
 import org.bukkit.entity.Player
 import java.util.*
 import org.bukkit.*

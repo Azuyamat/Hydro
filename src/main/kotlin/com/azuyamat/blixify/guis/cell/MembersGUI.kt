@@ -2,8 +2,8 @@ package com.azuyamat.blixify.guis.cell
 
 import com.azuyamat.blixify.data.cell.Cell
 import com.azuyamat.blixify.instance
-import com.azuyamat.blixify.parse
-import com.azuyamat.blixify.titleCase
+import com.azuyamat.blixify.helpers.parse
+import com.azuyamat.blixify.helpers.titleCase
 import me.tech.mcchestui.GUI
 import me.tech.mcchestui.GUIType
 import me.tech.mcchestui.item.headItem

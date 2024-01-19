@@ -2,7 +2,7 @@ package com.azuyamat.blixify.events.impl.cell
 
 import com.azuyamat.blixify.data.cell.getCell
 import com.azuyamat.blixify.enums.CellRank
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent

@@ -1,12 +1,11 @@
 package com.azuyamat.blixify.enchants
 
-import com.azuyamat.blixify.Logger.info
+import com.azuyamat.blixify.helpers.Logger.info
 import com.azuyamat.blixify.data.player.getPlayerData
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerEvent
-import java.awt.SystemColor.info
 import kotlin.math.max
 import com.azuyamat.blixify.enums.Enchant as EnchantEnum
 
@@ -22,6 +21,9 @@ abstract class Enchant<E: Event>(
             is BlockBreakEvent -> event.player
             else -> return
         }
+
+        val world = player.world
+        if (world.name != "mines") return
 
         val enchants = player.getPlayerData().enchants
         val level = enchants[enchant] ?: return

@@ -1,9 +1,9 @@
 package com.azuyamat.blixify.events.impl.generic
 
-import com.azuyamat.blixify.Logger.info
+import com.azuyamat.blixify.helpers.Logger.info
 import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator
 import com.azuyamat.blixify.data.player.getPlayerData
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
@@ -22,6 +22,7 @@ class QuitEvent : Listener {
         // Save player data
         val playerData = player.getPlayerData()
         PlayerDataManipulator.save(playerData)
+        PlayerDataManipulator.unCache(player.uniqueId)
 
         info("Saved player data for ${player.name}")
     }

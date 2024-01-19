@@ -1,7 +1,7 @@
 package com.azuyamat.blixify.events
 
-import com.azuyamat.blixify.Logger.info
-import com.azuyamat.blixify.Logger.success
+import com.azuyamat.blixify.helpers.Logger.info
+import com.azuyamat.blixify.helpers.Logger.success
 import com.azuyamat.blixify.eventsPackageName
 import com.azuyamat.blixify.instance
 import org.bukkit.event.Listener

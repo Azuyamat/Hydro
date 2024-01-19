@@ -1,6 +1,6 @@
 package com.azuyamat.blixify.pickaxe
 
-import com.azuyamat.blixify.Logger.warning
+import com.azuyamat.blixify.helpers.Logger.warning
 import com.azuyamat.blixify.instance
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material

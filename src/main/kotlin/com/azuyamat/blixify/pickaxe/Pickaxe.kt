@@ -2,9 +2,9 @@ package com.azuyamat.blixify.pickaxe
 
 import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.instance
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import com.azuyamat.blixify.pickaxeManager
-import com.azuyamat.blixify.titleCase
+import com.azuyamat.blixify.helpers.titleCase
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration

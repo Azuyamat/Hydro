@@ -5,7 +5,7 @@ import com.azuyamat.blixify.commands.annotations.SubCommand
 import com.azuyamat.blixify.pickaxeManager
 import org.bukkit.entity.Player
 import com.azuyamat.blixify.commands.annotations.Command
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import com.azuyamat.blixify.pickaxe.updateLore
 
 @Command(

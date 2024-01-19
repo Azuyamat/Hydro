@@ -1,10 +1,8 @@
 package com.azuyamat.blixify.events.impl.generic
 
 import com.azuyamat.blixify.instance
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import com.azuyamat.blixify.scoreboard.Scoreboard
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

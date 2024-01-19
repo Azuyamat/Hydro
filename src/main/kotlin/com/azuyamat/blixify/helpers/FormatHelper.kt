@@ -1,4 +1,4 @@
-package com.azuyamat.blixify
+package com.azuyamat.blixify.helpers
 
 import com.azuyamat.blixify.data.player.getPlayerData
 import net.kyori.adventure.text.Component

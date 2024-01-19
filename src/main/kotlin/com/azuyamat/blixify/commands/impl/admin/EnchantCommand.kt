@@ -6,7 +6,7 @@ import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator.cache
 import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.enums.Enchant as EnchantEnum
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.parse
 import org.bukkit.entity.Player
 import kotlin.math.abs
 import kotlin.math.max

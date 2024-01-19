@@ -9,8 +9,10 @@ import com.azuyamat.blixify.data.manipulators.impl.CellDataManipulator
 import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator
 import com.azuyamat.blixify.data.player.getPlayerData
 import com.azuyamat.blixify.enums.CellRank
+import com.azuyamat.blixify.enums.CustomSound
 import com.azuyamat.blixify.guis.cell.cellGUI
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.helpers.SoundHelper
+import com.azuyamat.blixify.helpers.parse
 import me.tech.mcchestui.utils.openGUI
 import org.bukkit.entity.Player
 
@@ -28,7 +30,7 @@ class CellCommand {
             return
         }
 
-        val gui = cellGUI(player, cell)
+        val gui = cellGUI(player)
         player.openGUI(gui)
     }
 
@@ -38,6 +40,7 @@ class CellCommand {
         // Trim and remove all non-alphanumeric
         val name = name.trim().replace("[^A-Za-z0-9]".toRegex(), "")
 
+        // Make sure name is not taken
         if (CellDataManipulator.cellNameExists(name)) {
             player.sendMessage("<gray>Cell name already exists, try choosing a different name.".parse(true))
             return
@@ -51,6 +54,7 @@ class CellCommand {
 
         val data = player.getPlayerData()
 
+        // Make sure player doesn't already have a cell
         if (data.cellId != null) {
             player.sendMessage("<gray>You can't create a cell if you already have one. Either transfer ownership or delete your cell.".parse(true))
             return
@@ -74,12 +78,13 @@ class CellCommand {
 
         // Set the player's cell to the new cell
         data.cellId = name
-        PlayerDataManipulator.save(data)
+        data.cache()
 
         // Teleport the player and play the particles
         player.teleport(location)
         bound.highlightDuringTime(y = player.location.blockY)
         player.sendMessage("<gray>Congrats! You've create a cell.".parse(true))
+        SoundHelper(CustomSound.SUCCESS, player).play()
     }
 
     @SubCommand(
@@ -139,6 +144,39 @@ class CellCommand {
         player.sendMessage("<main>${target.name}<gray>'s cell has been shrunk by <main>$delta<gray> blocks. Please use this command cautiously.".parse(true))
 
         bound.highlightDuringTime(y = target.location.blockY)
+    }
+
+    @SubCommand(
+        name = "fakeCreate",
+        permission = "blixify.cell.fakeCreate",
+        description = "Fake create a cell! (Admin Only)",
+    )
+    fun fakeCreate(player: Player, amount: Int, prefix: String) {
+
+        for (i in 0..amount) {
+            val name = prefix + i
+            val location = CellPlacer.place()
+            val bound = Cells.createCell(location)
+
+            // Save the cell
+            val cell = Cell(
+                id = name,
+                members = mutableMapOf(),
+                settings = CellSettings(
+                    location = location
+                ),
+                stats = CellStats(),
+                bound = bound.toCellBoundData()
+            )
+            CellDataManipulator.save(cell)
+            CellDataManipulator.registerNewCellName(name)
+
+            player.sendMessage("<gray>Created cell <main>$name<gray> at <main>${location.blockX}, ${location.blockY}, ${location.blockZ}".parse(true))
+        }
+
+        player.sendMessage("".parse(false))
+        player.sendMessage("<gray>Created <main>$amount <gray>fake cells".parse(true))
+        player.sendMessage("".parse(false))
     }
 
     companion object {

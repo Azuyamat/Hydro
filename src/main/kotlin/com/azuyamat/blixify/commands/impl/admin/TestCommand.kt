@@ -7,7 +7,9 @@ import com.azuyamat.blixify.commands.annotations.Tab
 import com.azuyamat.blixify.commands.completions.Completions.getCompletion
 import com.azuyamat.blixify.data.manipulators.impl.PlayerDataManipulator
 import com.azuyamat.blixify.data.player.getPlayerData
-import com.azuyamat.blixify.parse
+import com.azuyamat.blixify.enums.CustomSound
+import com.azuyamat.blixify.helpers.SoundHelper
+import com.azuyamat.blixify.helpers.parse
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.entity.Player
@@ -93,5 +95,13 @@ class TestCommand {
     @SubCommand("optional")
     fun optional(player: Player, type: String = "nerd") {
         player.sendMessage("<gray>Optional <main>$type".parse(true))
+    }
+
+    @SubCommand("sound")
+    fun sound(player: Player, @Tab("sound") soundId: String, volume: Float?, pitch: Float?) {
+        val sound = CustomSound.valueOf(soundId.uppercase())
+        val helper = SoundHelper(sound, player, volume = volume, pitch = pitch)
+        helper.play()
+        player.sendMessage("<gray>Played sound <main>$soundId".parse(true))
     }
 }

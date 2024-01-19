@@ -18,12 +18,13 @@ object CellPlacer {
         val newPlacement = currentPlacement.clone()
 
         // Define whether to move on the x or z axis
-        val moveOnX = currentPlacement.blockX % (DELTA_CELL * CELLS_PER_SIDE) == 0
+        val moveOnX = currentPlacement.blockX < (CELLS_PER_SIDE * DELTA_CELL)
 
         if (moveOnX) {
             newPlacement.add(DELTA_CELL.toDouble(), 0.0, 0.0)
         } else {
             newPlacement.add(0.0, 0.0, DELTA_CELL.toDouble())
+            newPlacement.x = 0.0
         }
 
         ConfigManipulator.save(ConfigManipulator.load("main")!!.copy(cellPlacementLocation = newPlacement))

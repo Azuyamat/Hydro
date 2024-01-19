@@ -1,7 +1,7 @@
 package com.azuyamat.blixify.commands
 
-import com.azuyamat.blixify.Logger.info
-import com.azuyamat.blixify.Logger.success
+import com.azuyamat.blixify.helpers.Logger.info
+import com.azuyamat.blixify.helpers.Logger.success
 import com.azuyamat.blixify.commandsPackageName
 import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.commands.annotations.Command
@@ -38,7 +38,7 @@ object Commands {
         info("Registered ${commands.size} commands in $time ms")
     }
 
-    private fun registerCommand(command: KClass<*>): PluginCommand? {
+    private fun registerCommand(command: KClass<*>): PluginCommand {
 
         val parsedCommand = CommandBuilder(command)
         val info = parsedCommand.commandInfo
