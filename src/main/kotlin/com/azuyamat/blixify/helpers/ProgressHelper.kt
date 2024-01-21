@@ -29,7 +29,7 @@ class ProgressHelper(
         }
 
         playerData.progress = progress
-        playerData.save()
+        playerData.cache()
     }
 
     fun getMaxExp(): Int {
