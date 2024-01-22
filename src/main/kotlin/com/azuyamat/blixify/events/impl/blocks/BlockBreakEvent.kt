@@ -20,6 +20,6 @@ class BlockBreakEvent : Listener {
         // Increment blocks mined naturally
         val playerData = player.getPlayerData()
         playerData.stats.blocksMinedNaturally++
-        playerData.save()
+        playerData.cache()
     }
 }

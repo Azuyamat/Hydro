@@ -6,6 +6,7 @@ import com.azuyamat.blixify.data.player.PlayerData
 import com.azuyamat.blixify.data.player.SAVE_INTERVAL
 import com.azuyamat.blixify.instance
 import com.azuyamat.blixify.gson
+import com.azuyamat.blixify.helpers.TimerHelper
 import com.azuyamat.blixify.helpers.parse
 import java.io.File
 import java.util.*
@@ -26,6 +27,7 @@ object PlayerDataManipulator : Manipulator<PlayerData, UUID> {
 
         when (destination) {
             Destination.LOCAL -> {
+                val timer = TimerHelper()
                 // Get local file
                 val fileName = "${data.uuid}.json"
                 val dataFolder = instance.dataFolder
@@ -41,6 +43,11 @@ object PlayerDataManipulator : Manipulator<PlayerData, UUID> {
                 // Write data to file
                 val json = gson.toJson(data)
                 file.writeText(json)
+                val elapsed = timer.asFormatted()
+                if (player?.isOnline == true) {
+                    // If player is online, send action bar
+                    player.sendActionBar("<gray>Your data was saved in <main><underlined>$elapsed".parse(true))
+                }
             }
             Destination.MONGO -> {
                 TODO()
@@ -66,6 +73,7 @@ object PlayerDataManipulator : Manipulator<PlayerData, UUID> {
         // Otherwise, load data from destination
         return when (destination) {
             Destination.LOCAL -> {
+                val timer = TimerHelper()
                 // Get local file
                 val fileName = "$uuid.json"
                 val dataFolder = instance.dataFolder
@@ -83,6 +91,11 @@ object PlayerDataManipulator : Manipulator<PlayerData, UUID> {
                 val json = file.readText()
                 val data = gson.fromJson(json, PlayerData::class.java)
                 cache(data)
+                val elapsed = timer.asFormatted()
+                if (player?.isOnline == true) {
+                    // If player is online, send action bar
+                    player.sendActionBar("<gray>Your data was loaded in <main><underlined>$elapsed".parse(true))
+                }
                 return data
             }
             Destination.MONGO -> {
